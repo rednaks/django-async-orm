@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "django-async-orm"
+version = "0.1.0"
+description = "Bringing async capabilities to django ORM"
+authors = ["SkanderBM <skander.bmahmoud@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/rednaks/django-async-orm"
+repository = "https://github.com/rednaks/django-async-orm"
+keywords = ["django", "async", "orm"]
+classifiers = [
+    "Framework :: Django",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Quality Assurance",
+]
+include = [
+    "LICENSE",
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+Django = "^3.2.3"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
