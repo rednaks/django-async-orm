@@ -114,6 +114,7 @@ This is an on going projects, not all model methods are ported.
 | `Model.objects.async_ordered`            | ✅ |  |
 | `__aiter__`                              | ✅ |  |
 | `__repr__`                               | ✅ |  |
+| `Model.objects.async_iterator            | ❌ |  |
 
 
 ### Model:
@@ -126,11 +127,12 @@ This is an on going projects, not all model methods are ported.
 | `...`                                   | ❌ |  |
 
 
-### User Model 
+### User Model / Manager
 | methods                    | supported  | comments |
 |----------------------------|------------|----------|
-| `UserModel.is_authenticated`            | ❌ |  |
-| `UserModel.is_super_user`               | ❌ |  |
+| `UserModel.is_authenticated`            | ✅ |  |
+| `UserModel.is_super_user`               | ✅ |  |
+| `UserModel.objects.async_create_user`   | ❌ |  |
 | `...`                                   | ❌ |  |
 
 

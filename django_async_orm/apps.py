@@ -1,7 +1,7 @@
 import logging
 from django.apps import AppConfig, apps
 
-from django_async_orm.manager import AsyncManager
+from django_async_orm.utils import patch_manager
 
 
 class AsyncOrmConfig(AppConfig):
@@ -10,5 +10,4 @@ class AsyncOrmConfig(AppConfig):
     def ready(self):
         logging.info('AsyncORM: patching models')
         for model in apps.get_models(include_auto_created=True):
-            model.objects = AsyncManager()
-            model.objects.model = model
+            patch_manager(model)
