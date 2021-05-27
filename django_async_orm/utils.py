@@ -5,7 +5,7 @@ from django_async_orm.manager import AsyncManager
 def async_user_manager_factory():
     from django.contrib.auth.models import UserManager
 
-    class AsyncUserManager(UserManager, AsyncManager):
+    class AsyncUserManager(AsyncManager, UserManager):
         pass
 
     return AsyncUserManager
