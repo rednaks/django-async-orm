@@ -66,7 +66,8 @@ class QuerySetAsync(QuerySet):
 
     def __aiter__(self):
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-            executor.submit(self._fetch_all)
+            f = executor.submit(self._fetch_all)
+            f.result()
 
         return AsyncIter(self._result_cache)
 
