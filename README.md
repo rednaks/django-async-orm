@@ -1,3 +1,5 @@
+## Disclaimer: Don't use this module in production it's still in active development.
+
 # Django Async Orm
 Django module that brings async to django ORM.
 

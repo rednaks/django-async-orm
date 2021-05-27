@@ -1,21 +1,30 @@
-
 from django_async_orm.manager import AsyncManager
 
 
-def async_user_manager_factory():
-    from django.contrib.auth.models import UserManager
+def mixin_async_manager_factory(model):
+    """
+    Creates a new type a mixin between the base manager and the async manager.
 
-    class AsyncUserManager(AsyncManager, UserManager):
-        pass
+    :param model:  A django model class
+    :type model:  models.Model
+    :return: A mixin type
+    :rtype: object
+    """
 
-    return AsyncUserManager
+    base_manager_cls = model.objects.__class__
+    mixin_async_manager = type(f'MixinAsync{base_manager_cls.__name__}', (AsyncManager, base_manager_cls), dict())
+
+    return mixin_async_manager
 
 
 def patch_manager(model):
-    from django.contrib.auth.models import UserManager
-    async_manager_cls = AsyncManager
-    if isinstance(model.objects, UserManager):
-        async_manager_cls = async_user_manager_factory()
-
+    """
+    Patches django models to add async capabilities
+    :param model: A django model class
+    :type model: models.Model
+    :return: None
+    :rtype: None
+    """
+    async_manager_cls = mixin_async_manager_factory(model)
     model.objects = async_manager_cls()
     model.objects.model = model
