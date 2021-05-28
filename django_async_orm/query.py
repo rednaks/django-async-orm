@@ -8,11 +8,14 @@ from django.db.models import QuerySet
 from django_async_orm.iter import AsyncIter
 
 conf = {"thread_sensitive": True}
+executor_ = concurrent.futures.ThreadPoolExecutor
 
 try:
+    from gevent.threadpool import ThreadPoolExecutor as GThreadPoolExecutor
     from django.conf import settings
     if settings.GEVENT_DJANGO_ASYNC_ORM:
-        conf = {**conf, "executor": gevent.threadpool.ThreadPoolExecutor}
+        conf = {"thread_sensitive": False, "executor": GThreadPoolExecutor}
+        executor_ = GThreadPoolExecutor
 except Exception as e:
     print(e)
     print('defaulting django_async_orm')
@@ -76,14 +79,14 @@ class QuerySetAsync(QuerySet):
                                                                     using=using)
 
     def __aiter__(self):
-        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        with executor_(max_workers=1) as executor:
             f = executor.submit(self._fetch_all)
             f.result()
 
         return AsyncIter(self._result_cache)
 
     def __repr__(self):
-        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+        with executor_(max_workers=1) as executor:
             future_repr = executor.submit(super(QuerySetAsync, self).__repr__)
 
         return future_repr.result()
