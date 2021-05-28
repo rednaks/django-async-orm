@@ -24,10 +24,14 @@ include = [
 
 [tool.poetry.dependencies]
 python = "^3.6"
+gevent = { version = "^21.1.2", optional = true }
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 Django = "^3.2.3"
+
+[tool.poetry.extras]
+gevent = ["gevent"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
