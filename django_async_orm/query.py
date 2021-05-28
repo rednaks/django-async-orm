@@ -14,7 +14,7 @@ try:
     from gevent.threadpool import ThreadPoolExecutor as GThreadPoolExecutor
     from django.conf import settings
     if settings.GEVENT_DJANGO_ASYNC_ORM:
-        conf = {"thread_sensitive": False, "executor": GThreadPoolExecutor}
+        conf = {"thread_sensitive": False, "executor": GThreadPoolExecutor()}
         executor_ = GThreadPoolExecutor
 except Exception as e:
     print(e)
