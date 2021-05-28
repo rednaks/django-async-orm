@@ -1,9 +1,8 @@
 from concurrent.futures import Future
-import concurrent.futures.TimeoutError
 from gevent import monkey
 
 from gevent.timeout import Timeout as GTimeout
-from gevent._util import Lazy
+from gevent._util import update_wrapper
 from concurrent.futures import _base as cfb
 
 
@@ -25,11 +24,44 @@ def _wrap(future_proxy, fn):
         fn(future_proxy)
     return f
 
+class Lazy(object):
+    """
+    A non-data descriptor used just like @property. The
+    difference is the function value is assigned to the instance
+    dict the first time it is accessed and then the function is never
+    called again.
+
+    Contrast with `readproperty`.
+    """
+    def __init__(self, func):
+        self.data = (func, func.__name__)
+        update_wrapper(self, func)
+
+    def __get__(self, inst, class_):
+        if inst is None:
+            return self
+
+        func, name = self.data
+        value = func(inst)
+        inst.__dict__[name] = value
+        return value
+
 
 class _FutureProxy(Future):
     def __init__(self, asyncresult):
-        super(_FutureProxy, self).__init__()
+        # defaults from
+        self._condition = self._condition
+#        self._state = 'PENDING'
+#        self._result = None
+#        self._exception = None
+#        self._waiters = []
+#        self._done_callbacks = []
+
         self.asyncresult = asyncresult
+
+    def __call__(self, *args, **kwargs):
+        print('wtf')
+        super(_FutureProxy, self).__call(*args, **kwargs)
 
     # Internal implementation details of a c.f.Future
     @Lazy

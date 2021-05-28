@@ -19,19 +19,18 @@ try:
         def monkey_patch_the_monkey_patchers(ex):
             from .patch_gevent import _FutureProxy
             def submit(ex, fn, *args, **kwargs): # pylint:disable=arguments-differ
+                print(fn, *args, **kwargs)
                 with ex._shutdown_lock: # pylint:disable=not-context-manager
                     if ex._shutdown:
                         raise RuntimeError('cannot schedule new futures after shutdown')
-
                     future = ex._threadpool.spawn(fn, *args, **kwargs)
                     proxy_future = _FutureProxy(future)
-                    print('yeah i see the _condition?', _FutureProxy, proxy_future._condition)
-                    proxy_future.__class__ = concurrent.futures.Future
+                    #proxy_future.__class__ = concurrent.futures.Future
                     return proxy_future
             ex.submit = submit
             return ex
         MonkeyPoolExecutor = monkey_patch_the_monkey_patchers(GThreadPoolExecutor)
-        conf = {"thread_sensitive": False, "executor": MonkeyPoolExecutor()}
+        conf = {"thread_sensitive": False, "executor": MonkeyPoolExecutor(max_workers=1)}
         executor_ = MonkeyPoolExecutor
 except Exception as e:
     print(e)
@@ -113,7 +112,10 @@ class QuerySetAsync(QuerySet):
     ##################################################################
 
     async def async_all(self):
-        return await sync_to_async(self.all, **conf)()
+        import stackprinter
+        with stackprinter.TracePrinter(style='darkbg2'):
+            return await sync_to_async(self.all, **conf)()
+#        return await sync_to_async(self.all, **conf)()
 
     async def async_filter(self, *args, **kwargs):
         return await sync_to_async(self.filter, **conf)(*args, **kwargs)
