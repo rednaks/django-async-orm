@@ -1,0 +1,5 @@
+coverage
+tox
+tox-pyenv
+codecov
+
