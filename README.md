@@ -116,7 +116,9 @@ This is an on going projects, not all model methods are ported.
 | `Model.objects.async_ordered`            | ✅ |  |
 | `__aiter__`                              | ✅ |  |
 | `__repr__`                               | ✅ |  |
-| `Model.objects.async_iterator            | ❌ |  |
+| `__len__`                                | ❌ |  |
+| `__getitem__`                            | ❌ |  |
+| `Model.objects.async_iterator`           | ❌ |  |
 
 
 ### Model:
