@@ -9,6 +9,7 @@ homepage = "https://github.com/rednaks/django-async-orm"
 repository = "https://github.com/rednaks/django-async-orm"
 keywords = ["django", "async", "orm"]
 classifiers = [
+    "Development Status :: 3 - Alpha",
     "Framework :: Django",
     "Operating System :: OS Independent",
     "Topic :: Software Development :: Documentation",
