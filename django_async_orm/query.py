@@ -65,17 +65,15 @@ class QuerySetAsync(QuerySet):
                                                                     using=using)
 
     def __aiter__(self):
-        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-            f = executor.submit(self._fetch_all)
-            f.result()
-
+        self._fetch_all()
         return AsyncIter(self._result_cache)
 
-    def __repr__(self):
+    def _fetch_all(self):
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-            future_repr = executor.submit(super(QuerySetAsync, self).__repr__)
+            future_fetch_all = executor.submit(super(QuerySetAsync, self)._fetch_all)
 
-        return future_repr.result()
+
+
 
     ##################################################################
     # PUBLIC METHODS THAT ALTER ATTRIBUTES AND RETURN A NEW QUERYSET #
@@ -142,3 +140,4 @@ class QuerySetAsync(QuerySet):
         def _ordered():
             return super(QuerySetAsync, self).ordered
         return await sync_to_async(_ordered, thread_sensitive=True)()
+
