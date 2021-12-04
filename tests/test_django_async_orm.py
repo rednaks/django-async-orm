@@ -65,16 +65,9 @@ class ModelTestCase(TestCase):
             return await TestModel.objects.async_all()
 
 
-        async def _len(queryset):
-            count = 0
-            async for obj in queryset:
-                count += 1
-            return count
-
         result = self._event_loop.run_until_complete(_get_all())
         print(result)
-        count = self._event_loop.run_until_complete(_len(result))
-        self.assertEqual(count, 1)
+        self.assertEqual(len(result), 1)
 
 
     def test_async_first_in_all(self):
