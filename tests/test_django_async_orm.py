@@ -79,16 +79,19 @@ class ModelTestCase(TestCase):
 
     def test_async_first_in_all(self):
         async def _get_all():
-            return await TestModel.objects.async_all()
+            res = await TestModel.objects.async_all()
+            print(res[0])
+            return res
 
         async def _get_first(query_set):
             return await query_set.async_first()
 
 
         all_result = self._event_loop.run_until_complete(_get_all())
+        print(all_result[0])
         first = self._event_loop.run_until_complete(_get_first(all_result))
 
-        #self.assertEqual(all_result[0].name, first.name)
+        self.assertEqual(all_result[0].name, first.name)
 
 
 
