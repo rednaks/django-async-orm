@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-async-orm"
-version = "0.1.8"
+version = "0.1.9"
 description = "Bringing async capabilities to django ORM"
 authors = ["SkanderBM <skander.bmahmoud@gmail.com>"]
 license = "MIT"
