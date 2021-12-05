@@ -76,7 +76,7 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
         self.assertEqual(all_result[0].name, first.name)
 
 
-    @tag('dev')
+    @tag('ci')
     async def test_async_last_in_all(self):
         all_result = await TestModel.objects.async_all()
 
