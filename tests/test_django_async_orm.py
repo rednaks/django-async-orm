@@ -155,12 +155,15 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
     @tag('ci')
     async def test_async_filter(self):
         qs = await TestModel.objects.async_filter(name="setup 2")
-        element = qs[0]
+        element = await qs.async_first()
         self.assertEqual(element.name, "setup 2")
 
-    @tag('dev')
+    @tag('ci')
     async def test_async_exclude(self):
-        self.assertTrue(False, "Not Implemented")
+        qs = await TestModel.objects.async_filter(obj_type="setup")
+        qs = await qs.async_exclude(name="setup 1")
+        el = await qs.async_first()
+        self.assertEqual(el.name, "setup 2")
 
     @tag('dev')
     async def test_async_complex_filter(self):
