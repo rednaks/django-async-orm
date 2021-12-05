@@ -120,6 +120,11 @@ This is an on going projects, not all model methods are ported.
 | `__getitem__`                            | ✅ |  |
 | `Model.objects.async_iterator`           | ❌ |  |
 
+### RawQuerySet
+Not supported ❌
+
+You can still call `Model.object.async_raw()` but you will be unable to access the results.
+
 ### Model:
 
 | methods                    | supported  | comments |
