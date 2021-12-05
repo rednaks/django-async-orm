@@ -52,15 +52,19 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
         self.assertEqual(len(result), 2)
 
 
-    @tag('dev')
+    @tag('ci')
     async def test_async_earliest(self):
-        # TODO: need new field date
-        self.assertTrue(False)
+        first = await (await TestModel.objects.async_all()).async_first()
+        earliest = await TestModel.objects.async_earliest('id')
+        print(earliest)
+        self.assertTrue(earliest.id, first.id)
 
-    @tag('dev')
+    @tag('ci')
     async def test_async_latest(self):
-        # TODO: need new field date
-        self.assertTrue(False)
+        created = await TestModel.objects.async_create(name='latest')
+        latest = await TestModel.objects.async_latest('id')
+        print(latest)
+        self.assertEqual(latest.id, created.id)
 
 
     @tag('ci')
