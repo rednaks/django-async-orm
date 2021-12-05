@@ -1,6 +1,7 @@
+import pdb
 import asyncio
 
-from django.test import TestCase, tag
+from django.test import TestCase, tag, TransactionTestCase
 from django.conf import settings
 from django.apps import apps
 from unittest import IsolatedAsyncioTestCase
@@ -25,7 +26,7 @@ class AppLoadingTestCase(TestCase):
             'Manager class name is %s but should start with "MixinAsync"' % (manager_class_name) )
 
 
-class ReadModelTestCase(TestCase, IsolatedAsyncioTestCase):
+class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
 
     async def asyncSetUp(self):
         await TestModel.objects.async_create(name="setup 1", obj_type='setup')
@@ -44,6 +45,7 @@ class ReadModelTestCase(TestCase, IsolatedAsyncioTestCase):
 
     @tag('ci')
     async def test_async_all(self):
+        #pdb.set_trace()
         result = await TestModel.objects.async_all()
 
         print(result)
@@ -70,13 +72,13 @@ class ReadModelTestCase(TestCase, IsolatedAsyncioTestCase):
         self.assertEqual(all_result[0].name, first.name)
 
 
-    @tag('last')
+    @tag('dev')
     async def test_async_last_in_all(self):
         all_result = await TestModel.objects.async_all()
 
         last = await all_result.async_last()
 
-        self.assertEqual(all_result[-1].name, last.name)
+        self.assertEqual(all_result[1].name, last.name)
 
 
     @tag('dev')
@@ -90,7 +92,6 @@ class ReadModelTestCase(TestCase, IsolatedAsyncioTestCase):
     async def test_async_exists(self):
         ...
 
-class WriteModelTestCase(IsolatedAsyncioTestCase, TestCase):
 
     @tag('ci')
     async def test_create(self):
@@ -110,16 +111,12 @@ class WriteModelTestCase(IsolatedAsyncioTestCase, TestCase):
     @tag('dev')
     async def test_delete(self):
 
-        print(self._asyncioTestLoop)
         created = await TestModel.objects.async_create(name="to delete")
-        print(created)
-        print(self._asyncioTestLoop)
         all_created = await TestModel.objects.async_all()
-        print(self._asyncioTestLoop)
-        print(list(all_created))
-        self.assertEqual(len(all_created), 1)
+        self.assertEqual(len(all_created), 3)
 
         await all_created.async_delete()
         all_after_delete = await TestModel.objects.async_all()
         self.assertEqual(len(all_after_delete), 0)
+
 
