@@ -32,79 +32,21 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
         await TestModel.objects.async_create(name="setup 1", obj_type='setup')
         await TestModel.objects.async_create(name="setup 2", obj_type='setup')
 
-
     async def asyncTearDown(self):
         await TestModel.objects.async_delete()
-
 
     @tag('ci')
     async def test_async_get(self):
         result = await TestModel.objects.async_get(name="setup 1")
-
         self.assertEqual(result.name, "setup 1")
 
     @tag('ci')
-    async def test_async_all(self):
-        #pdb.set_trace()
-        result = await TestModel.objects.async_all()
-
-        print(result)
-        self.assertEqual(len(result), 2)
-
-
-    @tag('ci')
-    async def test_async_earliest(self):
-        first = await (await TestModel.objects.async_all()).async_first()
-        earliest = await TestModel.objects.async_earliest('id')
-        print(earliest)
-        self.assertTrue(earliest.id, first.id)
-
-    @tag('ci')
-    async def test_async_latest(self):
-        created = await TestModel.objects.async_create(name='latest')
-        latest = await TestModel.objects.async_latest('id')
-        print(latest)
-        self.assertEqual(latest.id, created.id)
-
-
-    @tag('ci')
-    async def test_async_first_in_all(self):
-        all_result = await TestModel.objects.async_all()
-
-        first = await all_result.async_first()
-
-        self.assertEqual(all_result[0].name, first.name)
-
-
-    @tag('ci')
-    async def test_async_last_in_all(self):
-        all_result = await TestModel.objects.async_all()
-
-        last = await all_result.async_last()
-
-        self.assertEqual(all_result[1].name, last.name)
-
-
-    @tag('dev')
-    async def test_async_count(self):
-        result = await TestModel.objects.async_all()
-
-        print(result)
-        self.assertEqual(result.count(), 1)
-
-    @tag('dev')
-    async def test_async_exists(self):
-        ...
-
-
-    @tag('ci')
-    async def test_create(self):
-        print(self._asyncioTestLoop)
+    async def test_async_create(self):
         result = await TestModel.objects.async_create(name="test")
         self.assertEqual(result.name, 'test')
 
     @tag('ci')
-    async def test_bulk_create(self):
+    async def test_async_bulk_create(self):
         objs = await TestModel.objects.async_bulk_create([
             TestModel(name='bulk create 1'),
             TestModel(name='bulk create 2'),
@@ -113,7 +55,47 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
         self.assertEqual(len(objs), 2)
 
     @tag('dev')
-    async def test_delete(self):
+    async def test_async_bulk_update(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_get_or_create(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_update_or_create(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('ci')
+    async def test_async_earliest(self):
+        first = await (await TestModel.objects.async_all()).async_first()
+        earliest = await TestModel.objects.async_earliest('id')
+        self.assertTrue(earliest.id, first.id)
+
+    @tag('ci')
+    async def test_async_latest(self):
+        created = await TestModel.objects.async_create(name='latest')
+        latest = await TestModel.objects.async_latest('id')
+        self.assertEqual(latest.id, created.id)
+
+    @tag('ci')
+    async def test_async_first_in_all(self):
+        all_result = await TestModel.objects.async_all()
+        first = await all_result.async_first()
+        self.assertEqual(all_result[0].name, first.name)
+
+    @tag('ci')
+    async def test_async_last_in_all(self):
+        all_result = await TestModel.objects.async_all()
+        last = await all_result.async_last()
+        self.assertEqual(all_result[1].name, last.name)
+
+    @tag('dev')
+    async def test_async_in_bulk(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('ci')
+    async def test_async_delete(self):
 
         created = await TestModel.objects.async_create(name="to delete")
         all_created = await TestModel.objects.async_all()
@@ -123,4 +105,111 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
         all_after_delete = await TestModel.objects.async_all()
         self.assertEqual(len(all_after_delete), 0)
 
+    @tag('dev')
+    async def test_async_update(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('ci')
+    async def test_async_exists(self):
+        qs = await TestModel.objects.async_filter(name='setup 1')
+        exists = await qs.async_exists()
+        self.assertTrue(exists)
+    
+    @tag('dev')
+    async def test_async_explain(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_raw(self):
+        self.assertTrue(False, "Not Implemented")
+    
+    @tag('dev')
+    async def test_async_count(self):
+        result = await TestModel.objects.async_all()
+        self.assertEqual(result.count(), 1)
+
+    @tag('dev')
+    async def test_async_aiter(self):
+        self.assertTrue(False, "Not implemented")
+
+    @tag('dev')
+    async def test_async_fetch_all(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('ci')
+    async def test_async_all(self):
+        result = await TestModel.objects.async_all()
+        self.assertEqual(len(result), 2)
+
+    @tag('dev')
+    async def test_async_filter(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_exclude(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_complex_filter(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_union(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_intersection(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_difference(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_select_for_update(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_prefetch_related(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_annotate(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_order_by(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_distinct(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_extra(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_reverse(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_defer(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_only(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_using(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_resolve_expression(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('dev')
+    async def test_async_async_ordered(self):
+        self.assertTrue(False, "Not Implemented")
 
