@@ -1,90 +1,125 @@
 import asyncio
 
-from django.test import TestCase
+from django.test import TestCase, tag
 from django.conf import settings
 from django.apps import apps
+from unittest import IsolatedAsyncioTestCase
 import time
 
 from .models import TestModel
 
 
-class ModelTestCase(TestCase):
-    def __init__(self, *args, **kwargs):
-        self._event_loop = asyncio.get_event_loop()
 
-        super().__init__(*args, **kwargs)
+class AppLoadingTestCase(TestCase):
 
-    def setUp(self):
-        async def _create_async():
-            return await TestModel.objects.async_create(name="setup")
-        self._event_loop.run_until_complete(_create_async())
-
-    def tearDown(self):
-        async def _delete_async():
-            return await TestModel.objects.async_delete()
-        self._event_loop.run_until_complete(_delete_async())
-
-
+    @tag('ci')
     def test_dao_loaded(self):
         self.assertTrue(apps.is_installed('django_async_orm'))
 
 
+    @tag('ci')
     def test_manager_is_async(self):
         manager_class_name = TestModel.objects.__class__.__name__
         self.assertTrue(
             manager_class_name.startswith('MixinAsync'),
             'Manager class name is %s but should start with "MixinAsync"' % (manager_class_name) )
 
-    def test_create(self):
-        async def _create_async():
-            return await TestModel.objects.async_create(name="test")
 
-        result = self._event_loop.run_until_complete(_create_async())
+class ReadModelTestCase(TestCase, IsolatedAsyncioTestCase):
+
+    async def asyncSetUp(self):
+        await TestModel.objects.async_create(name="setup 1", obj_type='setup')
+        await TestModel.objects.async_create(name="setup 2", obj_type='setup')
+
+
+    async def asyncTearDown(self):
+        await TestModel.objects.async_delete()
+
+
+    @tag('ci')
+    async def test_async_get(self):
+        result = await TestModel.objects.async_get(name="setup 1")
+
+        self.assertEqual(result.name, "setup 1")
+
+    @tag('ci')
+    async def test_async_all(self):
+        result = await TestModel.objects.async_all()
+
         print(result)
-        self.assertEqual(result.name, 'test')
-
-    def test_bulk_create(self):
-        async def _async_bulk_create():
-            return await TestModel.objects.async_bulk_create([
-                TestModel(name='bulk create 1'),
-                TestModel(name='bulk create 2'),
-            ])
-
-        objs = self._event_loop.run_until_complete(_async_bulk_create())
-        self.assertEqual(len(objs), 2)
-
-    def test_async_get(self):
-        async def get_object():
-            return await TestModel.objects.async_get(name="setup")
-
-        result = self._event_loop.run_until_complete(get_object())
-        self.assertEqual(result.name, "setup")
-
-    def test_async_all(self):
-        async def _get_all():
-            return await TestModel.objects.async_all()
+        self.assertEqual(len(result), 2)
 
 
-        result = self._event_loop.run_until_complete(_get_all())
-        print(result)
-        self.assertEqual(len(result), 1)
+    @tag('dev')
+    async def test_async_earliest(self):
+        # TODO: need new field date
+        self.assertTrue(False)
+
+    @tag('dev')
+    async def test_async_latest(self):
+        # TODO: need new field date
+        self.assertTrue(False)
 
 
-    def test_async_first_in_all(self):
-        async def _get_all():
-            res = await TestModel.objects.async_all()
-            print(res[0])
-            return res
+    @tag('ci')
+    async def test_async_first_in_all(self):
+        all_result = await TestModel.objects.async_all()
 
-        async def _get_first(query_set):
-            return await query_set.async_first()
-
-
-        all_result = self._event_loop.run_until_complete(_get_all())
-        print(all_result[0])
-        first = self._event_loop.run_until_complete(_get_first(all_result))
+        first = await all_result.async_first()
 
         self.assertEqual(all_result[0].name, first.name)
 
 
+    @tag('last')
+    async def test_async_last_in_all(self):
+        all_result = await TestModel.objects.async_all()
+
+        last = await all_result.async_last()
+
+        self.assertEqual(all_result[-1].name, last.name)
+
+
+    @tag('dev')
+    async def test_async_count(self):
+        result = await TestModel.objects.async_all()
+
+        print(result)
+        self.assertEqual(result.count(), 1)
+
+    @tag('dev')
+    async def test_async_exists(self):
+        ...
+
+class WriteModelTestCase(IsolatedAsyncioTestCase, TestCase):
+
+    @tag('ci')
+    async def test_create(self):
+        print(self._asyncioTestLoop)
+        result = await TestModel.objects.async_create(name="test")
+        self.assertEqual(result.name, 'test')
+
+    @tag('ci')
+    async def test_bulk_create(self):
+        objs = await TestModel.objects.async_bulk_create([
+            TestModel(name='bulk create 1'),
+            TestModel(name='bulk create 2'),
+        ])
+
+        self.assertEqual(len(objs), 2)
+
+    @tag('dev')
+    async def test_delete(self):
+
+        print(self._asyncioTestLoop)
+        created = await TestModel.objects.async_create(name="to delete")
+        print(created)
+        print(self._asyncioTestLoop)
+        all_created = await TestModel.objects.async_all()
+        print(self._asyncioTestLoop)
+        print(list(all_created))
+        self.assertEqual(len(all_created), 1)
+
+        await all_created.async_delete()
+        all_after_delete = await TestModel.objects.async_all()
+        self.assertEqual(len(all_after_delete), 0)
 
