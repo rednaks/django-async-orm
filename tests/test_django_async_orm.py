@@ -135,9 +135,13 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
         result = await TestModel.objects.async_all()
         self.assertEqual(result.count(), 1)
 
-    @tag('dev')
+    @tag('ci')
     async def test_async_aiter(self):
-        self.assertTrue(False, "Not implemented")
+        all_qs = await TestModel.objects.async_all()
+        count = 0
+        async for obj in all_qs:
+            count += 1
+        self.assertEqual(count, 2)
 
     @tag('dev')
     async def test_async_fetch_all(self):
