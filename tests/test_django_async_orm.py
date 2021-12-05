@@ -105,9 +105,13 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
         all_after_delete = await TestModel.objects.async_all()
         self.assertEqual(len(all_after_delete), 0)
 
-    @tag('dev')
+    @tag('ci')
     async def test_async_update(self):
-        self.assertTrue(False, "Not Implemented")
+        created = await TestModel.objects.async_create(name="to update")
+        qs = await TestModel.objects.async_filter(name="to update")
+        updated = await qs.async_update(name="updated")
+        
+        self.assertEqual(updated, 1)
 
     @tag('ci')
     async def test_async_exists(self):
@@ -115,13 +119,16 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
         exists = await qs.async_exists()
         self.assertTrue(exists)
     
-    @tag('dev')
+    @tag('ci')
     async def test_async_explain(self):
-        self.assertTrue(False, "Not Implemented")
+        explained = await (await TestModel.objects.async_filter(name="setup 1")).async_explain()
+        print(explained)
+        self.assertEqual(explained, "2 0 0 SCAN TABLE tests_testmodel")
 
     @tag('dev')
     async def test_async_raw(self):
-        self.assertTrue(False, "Not Implemented")
+        rs = await TestModel.objects.async_raw('SELECT * from tests_testmodel')
+        print(list(rs))
     
     @tag('dev')
     async def test_async_count(self):
@@ -141,9 +148,11 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
         result = await TestModel.objects.async_all()
         self.assertEqual(len(result), 2)
 
-    @tag('dev')
+    @tag('ci')
     async def test_async_filter(self):
-        self.assertTrue(False, "Not Implemented")
+        qs = await TestModel.objects.async_filter(name="setup 2")
+        element = qs[0]
+        self.assertEqual(element.name, "setup 2")
 
     @tag('dev')
     async def test_async_exclude(self):
