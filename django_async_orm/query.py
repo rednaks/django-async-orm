@@ -63,6 +63,9 @@ class QuerySetAsync(QuerySet):
     async def async_raw(self, raw_query, params=None, translations=None, using=None):
         return await sync_to_async(self.raw, thread_sensitive=True)(raw_query, params=params, translations=translations,
                                                                     using=using)
+    
+    async def async_count(self):
+        return await sync_to_async(self.count, thread_sensitive=True)()
 
     def __aiter__(self):
         self._fetch_all()
