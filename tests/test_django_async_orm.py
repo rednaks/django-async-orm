@@ -5,6 +5,7 @@ from django.test import TestCase, tag, TransactionTestCase
 from django.conf import settings
 from django.apps import apps
 from unittest import IsolatedAsyncioTestCase
+from django.db.models.query import EmptyQuerySet
 import time
 
 from .models import TestModel
@@ -134,6 +135,11 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
     async def test_async_count(self):
         result = await TestModel.objects.async_all()
         self.assertEqual(result.count(), 1)
+
+    @tag('ci')
+    async def test_async_none(self):
+        result = await TestModel.objects.none()
+        self.assertEqual(result, EmptyQuerySet)
 
     @tag('ci')
     async def test_async_aiter(self):
