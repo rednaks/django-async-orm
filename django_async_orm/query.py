@@ -42,6 +42,9 @@ class QuerySetAsync(QuerySet):
     async def async_first(self):
         return await sync_to_async(self.first, thread_sensitive=True)()
 
+    async def async_none(self):
+        return await sync_to_async(self.none, thread_sensitive=True)()
+
     async def async_last(self):
         return await sync_to_async(self.last, thread_sensitive=True)()
 

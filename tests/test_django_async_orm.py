@@ -136,6 +136,11 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
         self.assertEqual(result.count(), 1)
 
     @tag('ci')
+    async def test_async_none(self):
+        result = await TestModel.objects.async_none()
+        self.assertEqual(list(result), [])
+
+    @tag('ci')
     async def test_async_aiter(self):
         all_qs = await TestModel.objects.async_all()
         count = 0
