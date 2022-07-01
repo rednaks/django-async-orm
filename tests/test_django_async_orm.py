@@ -1,14 +1,7 @@
-import pdb
-import asyncio
-
 from django.test import TestCase, tag, TransactionTestCase
-from django.conf import settings
 from django.apps import apps
 from unittest import IsolatedAsyncioTestCase
-import time
-
 from .models import TestModel
-
 
 
 class AppLoadingTestCase(TestCase):
@@ -16,7 +9,6 @@ class AppLoadingTestCase(TestCase):
     @tag('ci')
     def test_dao_loaded(self):
         self.assertTrue(apps.is_installed('django_async_orm'))
-
 
     @tag('ci')
     def test_manager_is_async(self):
@@ -51,8 +43,9 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
             TestModel(name='bulk create 1'),
             TestModel(name='bulk create 2'),
         ])
-
-        self.assertEqual(len(objs), 2)
+        objs = await TestModel.objects.async_all()
+        objs = await objs.async_count()
+        self.assertEqual(objs, 4)
 
     @tag('dev')
     async def test_async_bulk_update(self):
@@ -96,14 +89,15 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
 
     @tag('ci')
     async def test_async_delete(self):
-
         created = await TestModel.objects.async_create(name="to delete")
         all_created = await TestModel.objects.async_all()
-        self.assertEqual(len(all_created), 3)
+        count = await all_created.async_count()
+        self.assertEqual(count, 3)
 
         await all_created.async_delete()
         all_after_delete = await TestModel.objects.async_all()
-        self.assertEqual(len(all_after_delete), 0)
+        count = await all_created.async_count()
+        self.assertEqual(count, 0)
 
     @tag('ci')
     async def test_async_update(self):
@@ -130,10 +124,11 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
         rs = await TestModel.objects.async_raw('SELECT * from tests_testmodel')
         print(list(rs))
     
-    @tag('dev')
+    @tag('ci')
     async def test_async_count(self):
         result = await TestModel.objects.async_all()
-        self.assertEqual(result.count(), 1)
+        result = await result.async_count()
+        self.assertEqual(result, 2)
 
     @tag('ci')
     async def test_async_none(self):
@@ -155,7 +150,8 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
     @tag('ci')
     async def test_async_all(self):
         result = await TestModel.objects.async_all()
-        self.assertEqual(len(result), 2)
+        result = await result.async_count()
+        self.assertEqual(result, 2)
 
     @tag('ci')
     async def test_async_filter(self):

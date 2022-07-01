@@ -60,6 +60,9 @@ class QuerySetAsync(QuerySet):
     async def async_exists(self):
         return await sync_to_async(self.exists, thread_sensitive=True)()
 
+    async def async_count(self):
+        return await sync_to_async(self.count, thread_sensitive=True)()
+
     async def async_explain(self, *_, format=None, **options):
         return await sync_to_async(self.explain, thread_sensitive=True)(*_, format=format, **options)
 
