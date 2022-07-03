@@ -76,10 +76,12 @@ This is an on going projects, not all model methods are ported.
 
 ### Manager:
 
-| methods                    | supported  | comments |
-|----------------------------|------------|----------|
+| methods                                  | supported  | comments |
+|------------------------------------------|------------|----------|
 | `Model.objects.async_get`                | ✅ |  |
 | `Model.objects.async_create`             | ✅ |  |
+| `Model.objects.async_count`              | ✅ |  |
+| `Model.objects.async_none`               | ✅ |  |
 | `Model.objects.async_bulk_create`        | ✅ |  |
 | `Model.objects.async_bulk_update`        | ✅ |  |
 | `Model.objects.async_get_or_create`      | ✅ |  |
@@ -130,8 +132,6 @@ You can still call `Model.object.async_raw()` but you will be unable to access t
 | methods                    | supported  | comments |
 |----------------------------|------------|----------|
 | `Model.async_save`                      | ❌ |  |
-| `Model.async_update`                    | ❌ |  |
-| `Model.async_delete`                    | ❌ |  |
 | `...`                                   | ❌ |  |
 
 

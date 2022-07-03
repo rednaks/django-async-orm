@@ -33,27 +33,19 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
         self.assertEqual(result.name, "setup 1")
 
     @tag('ci')
-    async def test_async_create(self):
-        result = await TestModel.objects.async_create(name="test")
-        self.assertEqual(result.name, 'test')
-
-    @tag('ci')
-    async def test_async_bulk_create(self):
-        objs = await TestModel.objects.async_bulk_create([
-            TestModel(name='bulk create 1'),
-            TestModel(name='bulk create 2'),
-        ])
-        objs = await TestModel.objects.async_all()
-        objs = await objs.async_count()
-        self.assertEqual(objs, 4)
-
-    @tag('dev')
-    async def test_async_bulk_update(self):
-        self.assertTrue(False, "Not Implemented")
-
-    @tag('dev')
     async def test_async_get_or_create(self):
-        self.assertTrue(False, "Not Implemented")
+
+        async def test_async_get_or_create_on_obj_get(self):
+            obj = await TestModel.objects.async_get_or_create(name="setup 1")
+            self.assertEqual(obj[1], False)
+
+        async def test_async_get_or_create_on_obj_create(self):
+            obj = await TestModel.objects.async_get_or_create(name="setup 3")
+            self.assertEqual(obj[0].name, "setup 3")
+            self.assertEqual(obj[1], True)
+
+        await test_async_get_or_create_on_obj_get(self)
+        await test_async_get_or_create_on_obj_create(self)
 
     @tag('dev')
     async def test_async_update_or_create(self):
@@ -104,7 +96,6 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
         created = await TestModel.objects.async_create(name="to update")
         qs = await TestModel.objects.async_filter(name="to update")
         updated = await qs.async_update(name="updated")
-        
         self.assertEqual(updated, 1)
 
     @tag('ci')
@@ -112,7 +103,7 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
         qs = await TestModel.objects.async_filter(name='setup 1')
         exists = await qs.async_exists()
         self.assertTrue(exists)
-    
+
     @tag('ci')
     async def test_async_explain(self):
         explained = await (await TestModel.objects.async_filter(name="setup 1")).async_explain()
@@ -123,7 +114,7 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
     async def test_async_raw(self):
         rs = await TestModel.objects.async_raw('SELECT * from tests_testmodel')
         print(list(rs))
-    
+
     @tag('ci')
     async def test_async_count(self):
         result = await TestModel.objects.async_all()
@@ -194,9 +185,22 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
     async def test_async_annotate(self):
         self.assertTrue(False, "Not Implemented")
 
-    @tag('dev')
+    @tag('ci')
     async def test_async_order_by(self):
-        self.assertTrue(False, "Not Implemented")
+        async def test_async_order_by_ascending(self):
+            qs = await TestModel.objects.async_all()
+            qs = await qs.async_order_by('name')
+            qs = await qs.async_first()
+            self.assertEqual(qs.name, "setup 1")
+
+        async def test_async_order_by_descending(self):
+            qs = await TestModel.objects.async_all()
+            qs = await qs.async_order_by('-name')
+            qs = await qs.async_first()
+            self.assertEqual(qs.name, "setup 2")
+
+        await test_async_order_by_ascending(self)
+        await test_async_order_by_descending(self)
 
     @tag('dev')
     async def test_async_distinct(self):
