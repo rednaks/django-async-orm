@@ -33,6 +33,25 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
         self.assertEqual(result.name, "setup 1")
 
     @tag('ci')
+    async def test_async_create(self):
+        result = await TestModel.objects.async_create(name="test")
+        self.assertEqual(result.name, 'test')
+
+    @tag('ci')
+    async def test_async_bulk_create(self):
+        objs = await TestModel.objects.async_bulk_create([
+            TestModel(name='bulk create 1'),
+            TestModel(name='bulk create 2'),
+        ])
+        objs = await TestModel.objects.async_all()
+        objs = await objs.async_count()
+        self.assertEqual(objs, 4)
+
+    @tag('dev')
+    async def test_async_bulk_update(self):
+        self.assertTrue(False, "Not Implemented")
+
+    @tag('ci')
     async def test_async_get_or_create(self):
 
         async def test_async_get_or_create_on_obj_get(self):
@@ -88,7 +107,7 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
 
         await all_created.async_delete()
         all_after_delete = await TestModel.objects.async_all()
-        count = await all_created.async_count()
+        count = await all_after_delete.async_count()
         self.assertEqual(count, 0)
 
     @tag('ci')
@@ -186,21 +205,18 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
         self.assertTrue(False, "Not Implemented")
 
     @tag('ci')
-    async def test_async_order_by(self):
-        async def test_async_order_by_ascending(self):
-            qs = await TestModel.objects.async_all()
-            qs = await qs.async_order_by('name')
-            qs = await qs.async_first()
-            self.assertEqual(qs.name, "setup 1")
+    async def test_async_order_by_ascending(self):
+        qs = await TestModel.objects.async_all()
+        qs = await qs.async_order_by('name')
+        qs = await qs.async_first()
+        self.assertEqual(qs.name, "setup 1")
 
-        async def test_async_order_by_descending(self):
-            qs = await TestModel.objects.async_all()
-            qs = await qs.async_order_by('-name')
-            qs = await qs.async_first()
-            self.assertEqual(qs.name, "setup 2")
-
-        await test_async_order_by_ascending(self)
-        await test_async_order_by_descending(self)
+    @tag('ci')
+    async def test_async_order_by_descending(self):
+        qs = await TestModel.objects.async_all()
+        qs = await qs.async_order_by('-name')
+        qs = await qs.async_first()
+        self.assertEqual(qs.name, "setup 2")
 
     @tag('dev')
     async def test_async_distinct(self):
