@@ -132,6 +132,8 @@ You can still call `Model.object.async_raw()` but you will be unable to access t
 | methods                    | supported  | comments |
 |----------------------------|------------|----------|
 | `Model.async_save`                      | ❌ |  |
+| `Model.async_update`                    | ❌ |  |
+| `Model.async_delete`                    | ❌ |  |
 | `...`                                   | ❌ |  |
 
 
