@@ -132,7 +132,7 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
             await TestModel.objects.async_filter(name="setup 1")
         ).async_explain()
         print(explained)
-        self.assertEqual(explained, "2 0 0 SCAN TABLE tests_testmodel")
+        self.assertEqual(explained, "2 0 0 SCAN tests_testmodel")
 
     @tag("dev")
     async def test_async_raw(self):
