@@ -1,7 +1,6 @@
 import concurrent
 
 from asgiref.sync import sync_to_async
-# Create your models here.
 from django.db.models import QuerySet
 
 from django_async_orm.iter import AsyncIter
