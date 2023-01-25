@@ -1,3 +1,5 @@
+[![Downloads](https://static.pepy.tech/badge/django-async-orm)](https://pepy.tech/project/django-async-orm)
+
 ## Disclaimer: Don't use this module in production it's still in active development.
 
 # Django Async Orm
