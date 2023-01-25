@@ -4,6 +4,7 @@ from django.contrib.auth import login, logout
 
 def _sync_render(*args, **kwargs):
     from django.shortcuts import render
+
     return render(*args, **kwargs)
 
 

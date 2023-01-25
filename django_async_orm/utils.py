@@ -12,8 +12,12 @@ def mixin_async_manager_factory(model):
     """
 
     base_manager_cls = model.objects.__class__
-    if not base_manager_cls.__name__.startswith('MixinAsync'):
-        mixin_async_manager = type(f'MixinAsync{base_manager_cls.__name__}', (AsyncManager, base_manager_cls), dict())
+    if not base_manager_cls.__name__.startswith("MixinAsync"):
+        mixin_async_manager = type(
+            f"MixinAsync{base_manager_cls.__name__}",
+            (AsyncManager, base_manager_cls),
+            dict(),
+        )
         return mixin_async_manager
 
 
