@@ -1,4 +1,5 @@
 import logging
+
 from django.apps import AppConfig, apps
 
 from django_async_orm.utils import patch_manager
