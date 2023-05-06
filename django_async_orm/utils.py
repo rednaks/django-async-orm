@@ -13,12 +13,11 @@ def mixin_async_manager_factory(model):
 
     base_manager_cls = model.objects.__class__
     if not base_manager_cls.__name__.startswith("MixinAsync"):
-        mixin_async_manager = type(
+        return type(
             f"MixinAsync{base_manager_cls.__name__}",
             (AsyncManager, base_manager_cls),
-            dict(),
+            {},
         )
-        return mixin_async_manager
 
 
 def patch_manager(model):
@@ -29,7 +28,7 @@ def patch_manager(model):
     :return: None
     :rtype: None
     """
-    async_manager_cls = mixin_async_manager_factory(model)
-    if async_manager_cls:
-        model.objects = async_manager_cls()
+    amanager_cls = mixin_async_manager_factory(model)
+    if amanager_cls:
+        model.objects = amanager_cls()
         model.objects.model = model
