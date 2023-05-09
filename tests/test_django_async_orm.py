@@ -127,9 +127,7 @@ class ModelTestCase(TransactionTestCase, IsolatedAsyncioTestCase):
 
     @tag("ci")
     async def test_async_explain(self):
-        explained = await (
-            await TestModel.objects.afilter(name="setup 1")
-        ).aexplain()
+        explained = await (await TestModel.objects.afilter(name="setup 1")).aexplain()
         print(explained)
         self.assertEqual(explained, "2 0 0 SCAN tests_testmodel")
 
