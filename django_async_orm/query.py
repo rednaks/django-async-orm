@@ -220,6 +220,7 @@ class __LegacyQuerySetAsync(QuerySet):  # pragma: no cover
     @property
     async def async_ordered(self):
         __deprecation_warning()
+
         def _ordered():
             return super(QuerySetAsync, self).ordered
 
