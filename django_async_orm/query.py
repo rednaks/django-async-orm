@@ -1,11 +1,11 @@
 import concurrent
+import inspect
+import warnings
 
 from channels.db import database_sync_to_async as sync_to_async
 from django.db.models import QuerySet
 
 from django_async_orm.iter import AsyncIter
-import inspect
-import warnings
 
 
 class __LegacyQuerySetAsync(QuerySet):  # pragma: no cover
