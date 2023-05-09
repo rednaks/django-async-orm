@@ -23,14 +23,14 @@ class __LegacyQuerySetAsync(QuerySet):  # pragma: no cover
 
             method = getattr(self, name)
 
-            def wrapper(*args, **kwargs):
+            async def wrapper(*args, **kwargs):
                 warnings.warn(
                     "Methods starting with `async_*` are deprecated and will be "
                     "removed in a future release. Use `a*` methods instead.",
                     category=DeprecationWarning,
                     stacklevel=2,
                 )
-                return method(*args, **kwargs)
+                return await method(*args, **kwargs)
 
             setattr(self, name, wrapper)
 
