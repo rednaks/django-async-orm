@@ -9,7 +9,6 @@ codecov==2.1.13; (python_version >= "2.7" and python_full_version < "3.0.0") or 
 colorama==0.4.6; python_version >= "3.7" and python_full_version < "3.0.0" and sys_platform == "win32" and platform_system == "Windows" or sys_platform == "win32" and python_version >= "3.7" and python_full_version >= "3.7.0" and platform_system == "Windows"
 coverage==7.1.0; python_version >= "3.7"
 distlib==0.3.6; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6"
-django==3.2.16; python_version >= "3.6"
 filelock==3.9.0; python_version >= "3.7" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.7"
 flake8==5.0.4; python_full_version >= "3.6.1"
 idna==3.4; python_version >= "3.7" and python_version < "4" and (python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.4.0")
