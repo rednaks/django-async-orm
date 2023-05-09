@@ -1,5 +1,4 @@
 import concurrent
-import inspect
 import warnings
 
 from channels.db import database_sync_to_async as sync_to_async
@@ -18,9 +17,11 @@ class __LegacyQuerySetAsync(QuerySet):  # pragma: no cover
         super().__init__(model, query, using, hints)
 
         # Add deprecation warning to all `async_*` methods
-        for name, method in inspect.getmembers(self, predicate=inspect.ismethod):
+        for name in dir(self):
             if not name.startswith("async_"):
                 continue
+
+            method = getattr(self, name)
 
             def wrapper(*args, **kwargs):
                 warnings.warn(
