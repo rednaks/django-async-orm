@@ -28,7 +28,7 @@ def patch_manager(model):
     :return: None
     :rtype: None
     """
-    amanager_cls = mixin_async_manager_factory(model)
-    if amanager_cls:
-        model.objects = amanager_cls()
+    async_manager_cls = mixin_async_manager_factory(model)
+    if async_manager_cls:
+        model.objects = async_manager_cls()
         model.objects.model = model
