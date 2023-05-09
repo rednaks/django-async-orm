@@ -11,7 +11,7 @@ class AsyncIter:
     async def __anext__(self):
         try:
             element = next(self._iter)
-        except StopIteration as e:
-            raise StopAsyncIteration from e
+        except StopIteration:
+            raise StopAsyncIteration
         await asyncio.sleep(0)
         return element
