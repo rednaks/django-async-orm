@@ -39,3 +39,4 @@ urllib3==1.26.14; python_version >= "3.7" and python_full_version < "3.0.0" and 
 virtualenv==20.16.2; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6"
 wcwidth==0.2.6; python_version >= "3.5"
 zipp==3.11.0; python_version < "3.8" and python_version >= "3.7" and python_full_version >= "3.6.1" and (python_version >= "3.6" and python_full_version < "3.0.0" and python_version < "3.8" or python_full_version >= "3.5.0" and python_version < "3.8" and python_version >= "3.6")
+channels
