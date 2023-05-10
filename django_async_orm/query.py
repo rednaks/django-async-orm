@@ -17,7 +17,7 @@ def __deprecation_warning():
 
 
 def _priortize_django(method):
-    """Decorator used to prioritize built-in QuerySet methods over custom ones.
+    """Decorator used to prioritize Django's QuerySet methods over our custom ones.
 
     This will help maintain performance when Django adds real async support."""
 
