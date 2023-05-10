@@ -21,7 +21,8 @@ INSTALLED_APPS = [
 # Usage
 
 Django Async Orm will patch all your existing models to add `async_*` prefixed methods.
-To be
+
+_note:_ Only non-existing methods will be patched.
 
 example:
 
