@@ -22,7 +22,9 @@ def _priortize_django(method):
     This will help maintain performance when Django adds real async support."""
 
     def _wrapper(self, *args, **kwargs):
-        return getattr(super(QuerySet, self), method.__name__, method)(self, *args, **kwargs)
+        return getattr(super(QuerySet, self), method.__name__, method)(
+            self, *args, **kwargs
+        )
 
     return _wrapper
 
