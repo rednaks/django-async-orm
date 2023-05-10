@@ -16,7 +16,7 @@ def __deprecation_warning():
     )
 
 
-def _priortize_django(method):
+def _prefer_django(method):
     """Decorator used to prioritize Django's QuerySet methods over our custom ones.
 
     This will help maintain performance when Django adds real async support."""
@@ -33,93 +33,93 @@ class QuerySetAsync(QuerySet):
     def __init__(self, model=None, query=None, using=None, hints=None):
         super().__init__(model, query, using, hints)
 
-    @_priortize_django
+    @_prefer_django
     async def aget(self, *args, **kwargs):
         return await sync_to_async(self.get, thread_sensitive=True)(*args, **kwargs)
 
-    @_priortize_django
+    @_prefer_django
     async def acreate(self, **kwargs):
         return await sync_to_async(self.create, thread_sensitive=True)(**kwargs)
 
-    @_priortize_django
+    @_prefer_django
     async def abulk_create(self, obs, batch_size=None, ignore_conflicts=False):
         return await sync_to_async(self.bulk_create, thread_sensitive=True)(
             obs, batch_size=batch_size, ignore_conflicts=ignore_conflicts
         )
 
-    @_priortize_django
+    @_prefer_django
     async def abulk_update(self, objs, fields, batch_size=None):
         return await sync_to_async(self.bulk_update, thread_sensitive=True)(
             objs=objs, fields=fields, batch_size=batch_size
         )
 
-    @_priortize_django
+    @_prefer_django
     async def aget_or_create(self, defaults=None, **kwargs):
         return await sync_to_async(self.get_or_create, thread_sensitive=True)(
             defaults=defaults, **kwargs
         )
 
-    @_priortize_django
+    @_prefer_django
     async def aupdate_or_create(self, defaults=None, **kwargs):
         return await sync_to_async(self.update_or_create, thread_sensitive=True)(
             defaults=defaults, **kwargs
         )
 
-    @_priortize_django
+    @_prefer_django
     async def aearliest(self, *fields):
         return await sync_to_async(self.earliest, thread_sensitive=True)(*fields)
 
-    @_priortize_django
+    @_prefer_django
     async def alatest(self, *fields):
         return await sync_to_async(self.latest, thread_sensitive=True)(*fields)
 
-    @_priortize_django
+    @_prefer_django
     async def afirst(self):
         return await sync_to_async(self.first, thread_sensitive=True)()
 
-    @_priortize_django
+    @_prefer_django
     async def anone(self):
         return await sync_to_async(self.none, thread_sensitive=True)()
 
-    @_priortize_django
+    @_prefer_django
     async def alast(self):
         return await sync_to_async(self.last, thread_sensitive=True)()
 
-    @_priortize_django
+    @_prefer_django
     async def ain_bulk(self, id_list=None, *_, field_name="pk"):
         return await sync_to_async(self.in_bulk, thread_sensitive=True)(
             id_list=id_list, *_, field_name=field_name
         )
 
-    @_priortize_django
+    @_prefer_django
     async def adelete(self):
         return await sync_to_async(self.delete, thread_sensitive=True)()
 
-    @_priortize_django
+    @_prefer_django
     async def aupdate(self, **kwargs):
         return await sync_to_async(self.update, thread_sensitive=True)(**kwargs)
 
-    @_priortize_django
+    @_prefer_django
     async def aexists(self):
         return await sync_to_async(self.exists, thread_sensitive=True)()
 
-    @_priortize_django
+    @_prefer_django
     async def acount(self):
         return await sync_to_async(self.count, thread_sensitive=True)()
 
-    @_priortize_django
+    @_prefer_django
     async def aexplain(self, *_, format=None, **options):
         return await sync_to_async(self.explain, thread_sensitive=True)(
             *_, format=format, **options
         )
 
-    @_priortize_django
+    @_prefer_django
     async def araw(self, raw_query, params=None, translations=None, using=None):
         return await sync_to_async(self.raw, thread_sensitive=True)(
             raw_query, params=params, translations=translations, using=using
         )
 
-    @_priortize_django
+    @_prefer_django
     def __aiter__(self):
         self._fetch_all()
         return AsyncIter(self._result_cache)
@@ -132,65 +132,65 @@ class QuerySetAsync(QuerySet):
     # PUBLIC METHODS THAT ALTER ATTRIBUTES AND RETURN A NEW QUERYSET #
     ##################################################################
 
-    @_priortize_django
+    @_prefer_django
     async def aall(self):
         return await sync_to_async(self.all, thread_sensitive=True)()
 
-    @_priortize_django
+    @_prefer_django
     async def afilter(self, *args, **kwargs):
         return await sync_to_async(self.filter, thread_sensitive=True)(*args, **kwargs)
 
-    @_priortize_django
+    @_prefer_django
     async def aexclude(self, *args, **kwargs):
         return await sync_to_async(self.exclude, thread_sensitive=True)(*args, **kwargs)
 
-    @_priortize_django
+    @_prefer_django
     async def acomplex_filter(self, filter_obj):
         return await sync_to_async(self.complex_filter, thread_sensitive=True)(
             filter_obj
         )
 
-    @_priortize_django
+    @_prefer_django
     async def aunion(self, *other_qs, all=False):
         return await sync_to_async(self.union, thread_sensitive=True)(
             *other_qs, all=all
         )
 
-    @_priortize_django
+    @_prefer_django
     async def aintersection(self, *other_qs):
         return await sync_to_async(self.intersection, thread_sensitive=True)(*other_qs)
 
-    @_priortize_django
+    @_prefer_django
     async def adifference(self, *other_qs):
         return await sync_to_async(self.difference, thread_sensitive=True)(*other_qs)
 
-    @_priortize_django
+    @_prefer_django
     async def aselect_for_update(self, nowait=False, skip_locked=False, of=()):
         return await sync_to_async(self.select_for_update, thread_sensitive=True)(
             nowait=nowait, skip_locked=skip_locked, of=of
         )
 
-    @_priortize_django
+    @_prefer_django
     async def aprefetch_related(self, *lookups):
         return await sync_to_async(self.prefetch_related, thread_sensitive=True)(
             *lookups
         )
 
-    @_priortize_django
+    @_prefer_django
     async def aannotate(self, *args, **kwargs):
         return await sync_to_async(self.annotate, thread_sensitive=True)(
             *args, **kwargs
         )
 
-    @_priortize_django
+    @_prefer_django
     async def aorder_by(self, *field_names):
         return await sync_to_async(self.order_by, thread_sensitive=True)(*field_names)
 
-    @_priortize_django
+    @_prefer_django
     async def adistinct(self, *field_names):
         return await sync_to_async(self.distinct, thread_sensitive=True)(*field_names)
 
-    @_priortize_django
+    @_prefer_django
     async def aextra(
         self,
         select=None,
@@ -204,30 +204,30 @@ class QuerySetAsync(QuerySet):
             select, where, params, tables, order_by, select_params
         )
 
-    @_priortize_django
+    @_prefer_django
     async def areverse(self):
         return await sync_to_async(self.reverse, thread_sensitive=True)()
 
-    @_priortize_django
+    @_prefer_django
     async def adefer(self, *fields):
         return await sync_to_async(self.defer, thread_sensitive=True)(*fields)
 
-    @_priortize_django
+    @_prefer_django
     async def aonly(self, *fields):
         return await sync_to_async(self.only, thread_sensitive=True)(*fields)
 
-    @_priortize_django
+    @_prefer_django
     async def ausing(self, alias):
         return await sync_to_async(self.using, thread_sensitive=True)(alias)
 
-    @_priortize_django
+    @_prefer_django
     async def aresolve_expression(self, *args, **kwargs):
         return await sync_to_async(self.resolve_expression, thread_sensitive=True)(
             *args, **kwargs
         )
 
     @property
-    @_priortize_django
+    @_prefer_django
     async def aordered(self):
         def _ordered():
             return super(QuerySetAsync, self).ordered
