@@ -35,7 +35,7 @@ class QuerySetAsync(QuerySet):
 
     @_priortize_django
     async def aget(self, *args, **kwargs):
-        return await sync_to_async(self.get, thread_sensitive=1)(*args, **kwargs)
+        return await sync_to_async(self.get, thread_sensitive=True)(*args, **kwargs)
 
     @_priortize_django
     async def acreate(self, **kwargs):
@@ -240,7 +240,7 @@ class QuerySetAsync(QuerySet):
 
     async def async_get(self, *args, **kwargs):
         __deprecation_warning()
-        return await sync_to_async(self.get, thread_sensitive=1)(*args, **kwargs)
+        return await sync_to_async(self.get, thread_sensitive=True)(*args, **kwargs)
 
     async def async_create(self, **kwargs):
         __deprecation_warning()
