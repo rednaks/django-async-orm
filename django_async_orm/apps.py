@@ -9,7 +9,7 @@ class AsyncOrmConfig(AppConfig):
     name = "django_async_orm"
 
     def ready(self):
-        logging.info("AsyncORM: patching models")
+        logging.info("Patching models to add async ORM capabilities...")
         for model in apps.get_models(include_auto_created=True):
             patch_manager(model)
             # TODO: patch_model(model)
